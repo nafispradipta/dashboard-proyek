@@ -3,7 +3,7 @@
 @section('title', 'Detail Proyek - ' . $project->website_name)
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="w-full">
     <!-- Header Section -->
     <div class="relative overflow-hidden bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 rounded-2xl shadow-2xl mb-8">
         <div class="absolute inset-0 bg-black/10"></div>

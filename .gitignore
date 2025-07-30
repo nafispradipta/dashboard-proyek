@@ -22,3 +22,15 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Additional Security
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+.env.local
+.env.*.local
+/config/database.php.backup
+/storage/app/private/*
+!/storage/app/private/.gitignore
