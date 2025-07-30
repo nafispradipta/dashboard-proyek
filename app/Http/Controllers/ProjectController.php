@@ -81,7 +81,8 @@ class ProjectController extends Controller
     public function show(Project $project)
     {
         $project->load('client');
-        return view('projects.show', compact('project'));
+        $clients = Client::orderBy('name')->get();
+        return view('projects.show', compact('project', 'clients'));
     }
 
     /**
@@ -114,6 +115,15 @@ class ProjectController extends Controller
         ]);
 
         $project->update($validated);
+
+        // Handle AJAX request
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Proyek berhasil diperbarui.',
+                'project' => $project->load('client')
+            ]);
+        }
 
         return redirect()->route('projects.index')->with('success', 'Proyek berhasil diperbarui.');
     }
