@@ -1,0 +1,266 @@
+/* Custom CSS untuk mengatasi masalah warna status */
+.bg-purple-100 {
+    background-color: #ede9fe !important;
+}
+
+.text-purple-800 {
+    color: #5b21b6 !important;
+}
+
+.bg-green-100 {
+    background-color: #dcfce7 !important;
+}
+
+.text-green-800 {
+    color: #166534 !important;
+}
+
+.bg-yellow-100 {
+    background-color: #fef3c7 !important;
+}
+
+.text-yellow-800 {
+    color: #92400e !important;
+}
+
+.bg-red-100 {
+    background-color: #fee2e2 !important;
+}
+
+.text-red-800 {
+    color: #991b1b !important;
+}
+
+.bg-blue-100 {
+    background-color: #dbeafe !important;
+}
+
+.text-blue-800 {
+    color: #1e40af !important;
+}
+
+/* Hover effects untuk status badges */
+.status-badge {
+    transition: all 0.2s ease-in-out;
+}
+
+.status-badge:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom hover effect untuk kolom website */
+a:hover .text-gray-900 {
+    color: #8b5cf6 !important;
+}
+
+.hover\:text-purple-500:hover {
+    color: #8b5cf6 !important;
+}
+
+/* Custom scrollbar styling untuk horizontal scroll */
+.scrollbar-thin {
+    scrollbar-width: thin;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+    height: 8px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Custom scrollbar untuk tabel */
+.table-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Fix whitespace issues and improve table responsiveness */
+.table-container {
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+/* Prevent horizontal overflow on main content */
+.main-content-wrapper {
+    max-width: 100%;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+/* Ensure table doesn't create unnecessary whitespace */
+.table-responsive {
+    width: 100%;
+    min-width: 100%;
+    table-layout: fixed; /* Changed from auto to fixed for better control */
+}
+
+.table-responsive table {
+    width: 100%;
+    min-width: 800px; /* Minimum width for proper display */
+    table-layout: fixed;
+}
+
+/* Fix container overflow issues */
+.content-container {
+    max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+/* Custom Pagination Styles */
+.pagination-container {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.pagination-info {
+    background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
+    border: 1px solid #c7d2fe;
+    border-radius: 12px;
+    padding: 12px 16px;
+    backdrop-filter: blur(10px);
+}
+
+.pagination-link {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.pagination-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.5s;
+}
+
+.pagination-link:hover::before {
+    left: 100%;
+}
+
+.pagination-current {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    box-shadow: 0 8px 25px -8px rgba(99, 102, 241, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+.pagination-current::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.1) 75%, transparent 75%);
+    background-size: 20px 20px;
+    animation: shimmer 2s linear infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -20px 0;
+    }
+    100% {
+        background-position: 20px 0;
+    }
+}
+
+/* Specific fixes for large desktop screens */
+@media (min-width: 1281px) {
+    .table-container {
+        overflow-x: visible; /* Remove horizontal scroll on large screens */
+    }
+    
+    .table-responsive table {
+        min-width: 100%; /* Use full width on large screens */
+        max-width: 100%;
+        table-layout: auto; /* Allow auto layout on large screens */
+    }
+    
+    /* Ensure columns have proper width distribution */
+    .table-responsive th:nth-child(1),
+    .table-responsive td:nth-child(1) {
+        width: 20%; /* Nama */
+    }
+    
+    .table-responsive th:nth-child(2),
+    .table-responsive td:nth-child(2) {
+        width: 25%; /* Kontak */
+    }
+    
+    .table-responsive th:nth-child(3),
+    .table-responsive td:nth-child(3) {
+        width: 30%; /* Alamat */
+    }
+    
+    .table-responsive th:nth-child(4),
+    .table-responsive td:nth-child(4) {
+        width: 15%; /* Total Proyek */
+    }
+    
+    .table-responsive th:nth-child(5),
+    .table-responsive td:nth-child(5) {
+        width: 10%; /* Aksi */
+    }
+}
+
+/* Responsive table improvements */
+@media (max-width: 1280px) {
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    .table-responsive th,
+    .table-responsive td {
+        padding: 0.75rem 0.5rem;
+    }
+    
+    .table-responsive table {
+        min-width: 700px;
+    }
+}
+
+@media (max-width: 768px) {
+    .table-responsive table {
+        min-width: 600px;
+    }
+}
