@@ -129,6 +129,45 @@ class ProjectController extends Controller
     }
 
     /**
+     * Fetch project data for AJAX requests.
+     */
+    public function fetch(Project $project)
+    {
+        try {
+            // Load the client relationship
+            $project->load('client');
+            
+            return response()->json([
+                'success' => true,
+                'project' => [
+                    'id' => $project->id,
+                    'client_id' => $project->client_id,
+                    'website_name' => $project->website_name,
+                    'url' => $project->url,
+                    'status' => $project->status,
+                    'domain_expiry' => $project->domain_expiry,
+                    'hosting_expiry' => $project->hosting_expiry,
+                    'hosting_provider' => $project->hosting_provider,
+                    'price' => $project->price,
+                    'payment_date' => $project->payment_date,
+                    'payment_status' => $project->payment_status,
+                    'package_status' => $project->package_status,
+                    'notes' => $project->notes,
+                    'client' => $project->client ? [
+                        'id' => $project->client->id,
+                        'name' => $project->client->name
+                    ] : null
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil data proyek: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy(Project $project)

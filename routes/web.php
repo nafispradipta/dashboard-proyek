@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::put('clients/{client}', [ClientController::class, 'update'])->name('clients.update');
     Route::delete('clients/{client}', [ClientController::class, 'destroy'])->name('clients.destroy');
     
-    // Projects
+    // Projects - Custom routes with different pattern to avoid conflicts
+    Route::get('projects/fetch/{project}', [ProjectController::class, 'fetch'])->name('projects.fetch');
     Route::resource('projects', ProjectController::class);
 });
