@@ -170,9 +170,30 @@ class ProjectController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Project $project)
+    public function destroy(Request $request, Project $project)
     {
-        $project->delete();
-        return redirect()->route('projects.index')->with('success', 'Proyek berhasil dihapus.');
+        try {
+            $project->delete();
+
+            // Handle AJAX request
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Proyek berhasil dihapus.'
+                ]);
+            }
+
+            return redirect()->route('projects.index')->with('success', 'Proyek berhasil dihapus.');
+        } catch (\Exception $e) {
+            // Handle AJAX request
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menghapus proyek: ' . $e->getMessage()
+                ], 500);
+            }
+
+            return redirect()->route('projects.index')->with('error', 'Gagal menghapus proyek: ' . $e->getMessage());
+        }
     }
 }
