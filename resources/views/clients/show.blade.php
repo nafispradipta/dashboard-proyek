@@ -5,9 +5,11 @@
 @section('content')
 <div class="w-full content-container" x-data="{ 
     showEditModal: false,
+    showDeleteModal: false,
     isSubmitting: false,
     showSuccess: false,
     editingClient: null,
+    clientToDelete: null,
     openEditModal(client) {
         console.log('Client object:', client);
         // Membuat objek client baru tanpa relasi projects
@@ -27,6 +29,40 @@
             document.getElementById('edit_modal_phone').value = client.phone || '';
             document.getElementById('edit_modal_address').value = client.address || '';
             document.getElementById('edit_modal_notes').value = client.notes || '';
+        });
+    },
+    openDeleteModal(client) {
+        this.clientToDelete = client;
+        this.showDeleteModal = true;
+    },
+    deleteClient() {
+        if (!this.clientToDelete) return;
+        
+        this.isSubmitting = true;
+        
+        const formData = new FormData();
+        formData.append('_method', 'DELETE');
+        
+        fetch(`/clients/${this.clientToDelete.id}`, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').getAttribute('content')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = '/clients';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat menghapus data');
+        })
+        .finally(() => {
+            this.isSubmitting = false;
         });
     },
     submitEditForm(event) {
@@ -207,6 +243,17 @@
                                 {{ $client->created_at->format('d M Y') }}
                             </dd>
                         </div>
+                    </div>
+                    
+                    <!-- Tombol Hapus Client -->
+                    <div class="mt-6 mb-4 flex justify-end pr-4">
+                        <button @click="openDeleteModal({{ $client }})" 
+                                class="inline-flex items-center px-3 py-1.5 text-sm bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-lg shadow hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-red-500/30 transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                            <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                            Hapus Client
+                        </button>
                     </div>
                 </div>
             </div>
@@ -447,6 +494,83 @@
                             </button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Popup for Delete Confirmation -->
+    <div x-show="showDeleteModal" 
+         x-transition:enter="transition ease-out duration-300" 
+         x-transition:enter-start="opacity-0" 
+         x-transition:enter-end="opacity-100" 
+         x-transition:leave="transition ease-in duration-200" 
+         x-transition:leave-start="opacity-100" 
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-50 overflow-y-auto" 
+         style="display: none;">
+        
+        <!-- Background overlay -->
+        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" @click="showDeleteModal = false"></div>
+        
+        <!-- Modal container -->
+        <div class="flex min-h-full items-center justify-center p-4">
+            <div x-show="showDeleteModal" 
+                 x-transition:enter="transition ease-out duration-300" 
+                 x-transition:enter-start="opacity-0 scale-95" 
+                 x-transition:enter-end="opacity-100 scale-100" 
+                 x-transition:leave="transition ease-in duration-200" 
+                 x-transition:leave-start="opacity-100 scale-100" 
+                 x-transition:leave-end="opacity-0 scale-95"
+                 class="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
+                
+                <!-- Modal Header -->
+                <div class="relative bg-gradient-to-r from-red-600 via-red-500 to-red-700 px-6 py-4">
+                    <div class="absolute inset-0 bg-black/10"></div>
+                    <div class="relative flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-white/20 backdrop-blur-md rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-white">Konfirmasi Hapus</h3>
+                        </div>
+                        <button @click="showDeleteModal = false" class="text-white/80 hover:text-white hover:bg-white/20 rounded-lg p-2 transition-all duration-200 cursor-pointer">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Modal Body -->
+                <div class="p-6">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+                            <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">Apakah Anda yakin?</h3>
+                        <p class="text-gray-600 mb-0" x-text="clientToDelete ? `Anda akan menghapus client '${clientToDelete.name}' beserta semua data terkait.` : 'Anda akan menghapus client ini beserta semua data terkait.'"></p>
+                        <p class="text-gray-500 text-sm mt-2">Tindakan ini tidak dapat dibatalkan.</p>
+                    </div>
+                    
+                    <!-- Modal Footer -->
+                    <div class="flex items-center justify-center space-x-3 pt-4">
+                        <button type="button" @click="showDeleteModal = false" 
+                                :disabled="isSubmitting"
+                                class="px-6 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-200/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+                            Batal
+                        </button>
+                        <button type="button" @click="deleteClient()" 
+                                :disabled="isSubmitting"
+                                class="px-6 py-2.5 bg-gradient-to-r from-red-600 to-red-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-red-500/30 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none cursor-pointer">
+                            <span x-show="!isSubmitting">Ya, Hapus</span>
+                            <span x-show="isSubmitting">Menghapus...</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

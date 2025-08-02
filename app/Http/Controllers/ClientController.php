@@ -105,6 +105,15 @@ class ClientController extends Controller
     public function destroy(Client $client)
     {
         $client->delete();
+        
+        // Handle AJAX request
+        if (request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Klien berhasil dihapus.'
+            ]);
+        }
+        
         return redirect()->route('clients.index')->with('success', 'Klien berhasil dihapus.');
     }
 }
