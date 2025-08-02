@@ -3,7 +3,7 @@
 @section('title', 'Detail Proyek - ' . $project->website_name)
 
 @section('content')
-<div class="w-full" x-data="editProjectModal">
+<div class="w-full" x-data="projectPage">
     <!-- Header Section -->
     <div class="relative overflow-hidden bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 rounded-2xl shadow-2xl mb-8">
         <div class="absolute inset-0 bg-black/10"></div>
@@ -245,20 +245,30 @@
                         </dd>
                     </div>
                 </div>
+                <div class="px-6 py-4 border-t border-gray-200">
+                    <div class="flex justify-end">
+                        <button @click="$dispatch('open-delete-modal')" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-xs font-semibold rounded-xl shadow-lg text-white bg-red-600 hover:bg-red-700 transition-all duration-200 hover:scale-105">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                            Hapus Proyek
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Modal Edit Proyek -->
     <div x-show="showEditModal" 
+         x-cloak
          x-transition:enter="transition ease-out duration-300" 
          x-transition:enter-start="opacity-0" 
          x-transition:enter-end="opacity-100" 
          x-transition:leave="transition ease-in duration-200" 
          x-transition:leave-start="opacity-100" 
          x-transition:leave-end="opacity-0"
-         class="fixed inset-0 z-50 overflow-y-auto" 
-         style="display: none;">
+         class="fixed inset-0 z-50 overflow-y-auto">
         
         <!-- Background overlay -->
         <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"></div>
@@ -266,13 +276,14 @@
         <!-- Modal container -->
         <div class="flex min-h-full items-center justify-center p-4">
             <div x-show="showEditModal"
+                 x-cloak
                  x-transition:enter="transition ease-out duration-300"
                  x-transition:enter-start="opacity-0 scale-95"
                  x-transition:enter-end="opacity-100 scale-100"
                  x-transition:leave="transition ease-in duration-200"
                  x-transition:leave-start="opacity-100 scale-100"
                  x-transition:leave-end="opacity-0 scale-95"
-                 class="relative w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden">
+                 class="relative w-full max-w-3xl bg-white rounded-2xl shadow-2xl overflow-hidden">
                 
                 <!-- Success Message -->
                 <div x-show="showSuccess" 
@@ -583,10 +594,19 @@
 
 <script>
 document.addEventListener('alpine:init', () => {
-    Alpine.data('editProjectModal', () => ({
+    Alpine.data('projectPage', () => ({
+        showDeleteModal: false,
         showEditModal: false,
         isSubmitting: false,
         showSuccess: false,
+        
+        openDeleteModal() {
+            this.showDeleteModal = true;
+        },
+        
+        closeDeleteModal() {
+            this.showDeleteModal = false;
+        },
         
         openEditModal() {
             this.showEditModal = true;
@@ -600,7 +620,6 @@ document.addEventListener('alpine:init', () => {
         },
         
         fillFormData() {
-            // Fill form with current project data
             this.$nextTick(() => {
                 document.getElementById('edit_client_id').value = '{{ $project->client_id }}';
                 document.getElementById('edit_website_name').value = '{{ $project->website_name }}';
@@ -614,16 +633,18 @@ document.addEventListener('alpine:init', () => {
                 document.getElementById('edit_package_status').value = '{{ $project->package_status }}';
                 document.getElementById('edit_notes').value = '{{ $project->notes ?? '' }}';
                 
-                // Format and set price
                 const price = {{ $project->price ?? 0 }};
                 if (price > 0) {
                     document.getElementById('edit_price_display').value = this.formatPrice(price);
                     document.getElementById('edit_price_raw').value = price;
                 }
                 
-                // Setup price formatting
                 this.setupPriceFormatting();
             });
+        },
+        
+        formatPrice(value) {
+            return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         },
         
         setupPriceFormatting() {
@@ -642,10 +663,6 @@ document.addEventListener('alpine:init', () => {
                     }
                 });
             }
-        },
-        
-        formatPrice(value) {
-            return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         },
         
         submitEditForm(event) {
@@ -668,7 +685,6 @@ document.addEventListener('alpine:init', () => {
                     this.showSuccess = true;
                     setTimeout(() => {
                         this.closeEditModal();
-                        // Reload page to show updated data
                         window.location.reload();
                     }, 2000);
                 } else {
@@ -686,4 +702,91 @@ document.addEventListener('alpine:init', () => {
     }));
 });
 </script>
+
+<!-- Modal Konfirmasi Hapus -->
+<div x-data="{ open: false }" 
+     x-show="open" 
+     x-cloak
+     x-transition:enter="transition ease-out duration-300" 
+     x-transition:enter-start="opacity-0" 
+     x-transition:enter-end="opacity-100" 
+     x-transition:leave="transition ease-in duration-200" 
+     x-transition:leave-start="opacity-100" 
+     x-transition:leave-end="opacity-0"
+     @open-delete-modal.window="open = true"
+     class="fixed inset-0 z-50 overflow-y-auto">
+    
+    <!-- Background overlay -->
+    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"></div>
+    
+    <!-- Modal container -->
+    <div class="flex min-h-full items-center justify-center p-4">
+        <div x-show="open"
+             x-cloak
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95"
+             class="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
+            
+            <!-- Modal Header -->
+            <div class="relative bg-gradient-to-r from-red-600 to-red-700 px-6 py-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-white/30 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/30">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">Konfirmasi Hapus</h3>
+                            <p class="text-red-100 text-sm">Tindakan ini tidak dapat dibatalkan</p>
+                        </div>
+                    </div>
+                    <button @click="open = false" 
+                            class="text-white/80 hover:text-white p-2 rounded-lg hover:bg-white/10 transition-colors duration-200 cursor-pointer">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <!-- Decorative elements -->
+                <div class="absolute top-0 right-0 -mt-2 -mr-2 w-16 h-16 bg-white/10 rounded-full"></div>
+                <div class="absolute bottom-0 left-0 -mb-4 -ml-4 w-20 h-20 bg-white/5 rounded-full"></div>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="p-6">
+                <div class="text-center mb-6">
+                    <div class="w-20 h-20 mx-auto bg-red-100 rounded-full flex items-center justify-center mb-4">
+                        <svg class="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Apakah Anda yakin?</h3>
+                    <p class="text-sm text-gray-500">Anda akan menghapus proyek <span class="font-semibold text-gray-700">{{ $project->website_name }}</span>. Tindakan ini tidak dapat dibatalkan dan semua data terkait proyek ini akan dihapus secara permanen.</p>
+                </div>
+                
+                <div class="flex justify-center space-x-4">
+                    <button @click="open = false" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm font-medium rounded-xl transition-colors duration-200">
+                        Batal
+                    </button>
+                    <form action="{{ route('projects.destroy', $project) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-xl transition-colors duration-200 flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                            Hapus Permanen
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
