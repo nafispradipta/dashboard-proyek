@@ -144,6 +144,21 @@
                             </dd>
                         </div>
                         <div>
+                            <dt class="text-sm font-medium text-gray-500">Provider Hosting</dt>
+                            <dd class="mt-1 text-sm text-gray-900">
+                                @if($project->hosting_provider)
+                                    <span class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
+                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>
+                                        </svg>
+                                        {{ $project->hosting_provider }}
+                                    </span>
+                                @else
+                                    <span class="text-gray-400">-</span>
+                                @endif
+                            </dd>
+                        </div>
+                        <div>
                             <dt class="text-sm font-medium text-gray-500">Dibuat</dt>
                             <dd class="mt-1 text-sm text-gray-900">{{ $project->created_at->format('d M Y H:i') }}</dd>
                         </div>
@@ -205,44 +220,96 @@
                 <div class="px-6 py-4 border-b border-gray-200">
                     <h3 class="text-lg font-medium text-gray-900">Status Kadaluarsa</h3>
                 </div>
-                <div class="px-6 py-4 space-y-4">
-                    <div>
-                        <dt class="text-sm font-medium text-gray-500">Domain</dt>
-                        <dd class="mt-1">
-                            @if($project->domain_expiry)
-                                <div class="text-sm text-gray-900">{{ $project->domain_expiry->format('d M Y') }}</div>
-                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
-                                    @if($project->domain_expiry_status == 'expired') bg-red-100 text-red-800
-                                    @elseif($project->domain_expiry_status == 'warning') bg-yellow-100 text-yellow-800
-                                    @else bg-green-100 text-green-800 @endif">
-                                    {{ ucfirst($project->domain_expiry_status) }}
-                                </span>
-                                @if($project->domain_expiry_status == 'warning')
-                                    <div class="text-xs text-yellow-600 mt-1">
-                                        {{ $project->domain_expiry->diffInDays(now()) }} hari lagi
+                <div class="px-6 py-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Domain Card -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300">
+                            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-4 py-3 border-b border-gray-100">
+                                <div class="flex items-center">
+                                    <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
+                                    </svg>
+                                    <h4 class="font-semibold text-gray-800">Domain</h4>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                @if($project->domain_expiry)
+                                    <div class="flex justify-between items-center mb-2">
+                                        <div class="text-sm font-medium text-gray-900">{{ $project->domain_expiry->format('d M Y') }}</div>
+                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
+                                            @if($project->domain_expiry_status == 'expired') bg-red-100 text-red-800
+                                            @elseif($project->domain_expiry_status == 'warning') bg-yellow-100 text-yellow-800
+                                            @else bg-green-100 text-green-800 @endif">
+                                            {{ ucfirst($project->domain_expiry_status) }}
+                                        </span>
                                     </div>
-                                @elseif($project->domain_expiry_status == 'expired')
-                                    <div class="text-xs text-red-600 mt-1">
-                                        Expired {{ $project->domain_expiry->diffForHumans() }}
+                                    @if($project->domain_expiry_status == 'warning')
+                                        <div class="text-xs text-yellow-600 mt-1 flex items-center">
+                                            <svg class="w-4 h-4 mr-1 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                            Kadaluarsa dalam {{ str_replace(['from now', 'days', 'hours', 'minutes', 'seconds'], ['dari sekarang', 'hari', 'jam', 'menit', 'detik'], $project->domain_expiry->diffForHumans(['parts' => 2])) }}
+                                        </div>
+                                    @elseif($project->domain_expiry_status == 'expired')
+                                        <div class="text-xs text-red-600 mt-1 flex items-center">
+                                            <svg class="w-4 h-4 mr-1 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                            Kadaluarsa {{ str_replace(['ago', 'days', 'hours', 'minutes', 'seconds'], ['yang lalu', 'hari', 'jam', 'menit', 'detik'], $project->domain_expiry->diffForHumans()) }}
+                                        </div>
+                                    @endif
+                                @else
+                                    <div class="text-center py-3">
+                                        <span class="text-gray-400 text-sm">Tidak diatur</span>
                                     </div>
                                 @endif
-                            @else
-                                <span class="text-gray-400">Tidak diatur</span>
-                            @endif
-                        </dd>
-                    </div>
-                    
-                    <div>
-                        <dt class="text-sm font-medium text-gray-500">Hosting</dt>
-                        <dd class="mt-1">
-                            @if($project->hosting_provider)
-                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full border bg-gray-100 text-gray-800 border-gray-300">
-                                    {{ $project->hosting_provider }}
-                                </span>
-                            @else
-                                <span class="text-gray-400">Tidak diatur</span>
-                            @endif
-                        </dd>
+                            </div>
+                        </div>
+
+                        <!-- Hosting Card -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300">
+                            <div class="bg-gradient-to-r from-purple-50 to-pink-50 px-4 py-3 border-b border-gray-100">
+                                <div class="flex items-center">
+                                    <svg class="w-5 h-5 text-purple-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>
+                                    </svg>
+                                    <h4 class="font-semibold text-gray-800">Hosting</h4>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                @if($project->hosting_expiry)
+                                    <div class="flex justify-between items-center mb-2">
+                                        <div class="text-sm font-medium text-gray-900">{{ $project->hosting_expiry->format('d M Y') }}</div>
+                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
+                                            @if($project->hosting_expiry_status == 'expired') bg-red-100 text-red-800
+                                            @elseif($project->hosting_expiry_status == 'warning') bg-yellow-100 text-yellow-800
+                                            @else bg-green-100 text-green-800 @endif">
+                                            {{ ucfirst($project->hosting_expiry_status) }}
+                                        </span>
+                                    </div>
+                                    @if($project->hosting_expiry_status == 'warning')
+                                        <div class="text-xs text-yellow-600 mt-1 flex items-center">
+                                            <svg class="w-4 h-4 mr-1 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                            Kadaluarsa dalam {{ str_replace(['from now', 'days', 'hours', 'minutes', 'seconds'], ['dari sekarang', 'hari', 'jam', 'menit', 'detik'], $project->hosting_expiry->diffForHumans(['parts' => 2])) }}
+                                        </div>
+                                    @elseif($project->hosting_expiry_status == 'expired')
+                                        <div class="text-xs text-red-600 mt-1 flex items-center">
+                                            <svg class="w-4 h-4 mr-1 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                            Kadaluarsa {{ str_replace(['ago', 'days', 'hours', 'minutes', 'seconds'], ['yang lalu', 'hari', 'jam', 'menit', 'detik'], $project->hosting_expiry->diffForHumans()) }}
+                                        </div>
+                                    @endif
+
+                                @else
+                                    <div class="text-center py-3">
+                                        <span class="text-gray-400 text-sm">Tidak diatur</span>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="px-6 py-4 border-t border-gray-200">
