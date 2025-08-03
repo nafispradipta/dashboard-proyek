@@ -4,10 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Dashboard Manajemen Client')</title>
+    <title>@yield('title', isset($appSettings['app_name']) ? $appSettings['app_name'] : 'Dashboard Manajemen Client')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+    @if(isset($appSettings['favicon']))
+    <link rel="icon" href="{{ asset('storage/' . $appSettings['favicon']) }}" type="image/x-icon">
+    @endif
+    
     <style>
         [x-cloak] { display: none !important; }
+        
+        /* Custom theme colors */
+        :root {
+            --color-primary: {{ isset($appSettings['primary_color']) ? $appSettings['primary_color'] : '#6366f1' }};
+            --color-secondary: {{ isset($appSettings['secondary_color']) ? $appSettings['secondary_color'] : '#8b5cf6' }};
+            --color-accent: {{ isset($appSettings['accent_color']) ? $appSettings['accent_color'] : '#ec4899' }};
+        }
+        
+        .bg-gradient-primary {
+            background-image: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+        }
+        
+        .from-primary {
+            --tw-gradient-from: var(--color-primary);
+            --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(99, 102, 241, 0));
+        }
+        
+        .to-secondary {
+            --tw-gradient-to: var(--color-secondary);
+        }
+        
+        .text-primary {
+            color: var(--color-primary);
+        }
+        
+        .border-primary {
+            border-color: var(--color-primary);
+        }
+        
+        .ring-primary {
+            --tw-ring-color: var(--color-primary);
+        }
+        
+        .bg-gradient-to-r.from-purple-500.to-indigo-600 {
+            background-image: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+        }
     </style>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
@@ -51,7 +92,7 @@
                             </div>
                             <span @class(['px-2 py-1 text-xs font-semibold rounded-full', 'bg-white/20 text-white' => request()->routeIs('projects.*'), 'bg-gray-200 text-gray-700' => !request()->routeIs('projects.*')])>{{ App\Models\Project::count() }}</span>
                         </a>
-                        <a href="#" class="flex items-center px-3 py-2 mt-2 text-gray-700 text-sm font-bold rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <a href="{{ route('settings.index') }}" @class(['flex items-center px-3 py-2 mt-2 rounded-md text-sm font-bold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500', 'bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-medium' => request()->routeIs('settings.*'), 'text-gray-700 hover:bg-gray-200' => !request()->routeIs('settings.*')])>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                             <span class="ml-2">Settings</span>
                         </a>

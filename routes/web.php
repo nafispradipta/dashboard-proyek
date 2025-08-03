@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\SettingController;
 
 // Redirect root to login
 Route::get('/', function () {
@@ -42,4 +43,8 @@ Route::middleware('auth')->group(function () {
     // Projects - Custom routes with different pattern to avoid conflicts
     Route::get('projects/fetch/{project}', [ProjectController::class, 'fetch'])->name('projects.fetch');
     Route::resource('projects', ProjectController::class);
+    
+    // Settings
+    Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
+    Route::post('settings/general', [SettingController::class, 'updateGeneral'])->name('settings.update.general');
 });
