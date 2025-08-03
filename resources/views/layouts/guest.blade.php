@@ -6,6 +6,14 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Dashboard Manajemen Client')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        /* Custom styles for login page */
+        @media (min-width: 768px) {
+            .login-container {
+                height: 100vh;
+            }
+        }
+    </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
     <main>

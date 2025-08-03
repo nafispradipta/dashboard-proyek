@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             AdminUserSeeder::class,
-            UserSeeder::class,
+            // UserSeeder::class dihapus untuk hanya memiliki akun Admin
             ClientSeeder::class,
             ProjectSeeder::class,
             SettingSeeder::class,
