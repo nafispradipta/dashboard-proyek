@@ -25,7 +25,19 @@ class AppServiceProvider extends ServiceProvider
     {
         // Set locale to Indonesian
         \Carbon\Carbon::setLocale('id');
-        
-        // Kode untuk berbagi pengaturan tampilan telah dihapus
+
+        // Share application settings to all views as $appSettings
+        try {
+            if (\Illuminate\Support\Facades\Schema::hasTable('settings')) {
+                $settings = \App\Models\Setting::query()->pluck('value', 'key')->toArray();
+            } else {
+                $settings = [];
+            }
+        } catch (\Throwable $e) {
+            // During early bootstrap or before migrations, just provide empty settings
+            $settings = [];
+        }
+
+        \Illuminate\Support\Facades\View::share('appSettings', $settings);
     }
 }
