@@ -24,7 +24,7 @@ Kelola client dan proyek website dengan nyaman: status pekerjaan, paket layanan,
 - [🧭 Alur Aplikasi](#🧭-alur-aplikasi)
 - [🧠 Hal Penting untuk Dipahami](#🧠-hal-penting-untuk-dipahami)
 - [🗃️ Skema Data (Ringkas)](#🗃️-skema-data-ringkas)
-- [🧰 Perintah Berguna](#🧰 Perintah Berguna)
+- [🧰 Perintah Berguna](#perintah-berguna)
 - [📁 Struktur Proyek](#📁-struktur-proyek)
 - [🧭 Quick Reference (URL → Controller → View)](#🧭-quick-reference-url--controller--view)
 - [🔐 Environment Variables Penting](#🔐-environment-variables-penting)
@@ -140,6 +140,7 @@ Kelola client dan proyek website dengan nyaman: status pekerjaan, paket layanan,
 Catatan migrasi penting:
 - Beberapa migrasi melakukan transformasi enum (mis. `payment_status` dan `status`). Jalankan migrasi berurutan agar penyesuaian data berjalan aman.
 
+<a id="perintah-berguna"></a>
 ### 🧰 Perintah Berguna
 
 - Cache/config/view/route clear: 
