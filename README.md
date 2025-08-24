@@ -24,7 +24,7 @@ Kelola client dan proyek website dengan nyaman: status pekerjaan, paket layanan,
 - [🧭 Alur Aplikasi](#🧭-alur-aplikasi)
 - [🧠 Hal Penting untuk Dipahami](#🧠-hal-penting-untuk-dipahami)
 - [🗃️ Skema Data (Ringkas)](#🗃️-skema-data-ringkas)
-- [📁 🧰 Perintah Berguna](#🧰 Perintah Berguna)
+- [🧰 Perintah Berguna](#🧰 Perintah Berguna)
 - [📁 Struktur Proyek](#📁-struktur-proyek)
 - [🧭 Quick Reference (URL → Controller → View)](#🧭-quick-reference-url--controller--view)
 - [🔐 Environment Variables Penting](#🔐-environment-variables-penting)
