@@ -1,8 +1,42 @@
-# Dashboard Proyek — Manajemen Client & Proyek
+<div align="center">
 
-Aplikasi internal untuk mengelola client dan proyek website, termasuk status pekerjaan, paket layanan, status pembayaran, dan pengingat kadaluarsa domain/hosting. Dibangun dengan Laravel 12, Tailwind CSS 4, Vite, dan Alpine.js.
+# 📊 Dashboard Proyek — Manajemen Client & Proyek
 
-## Fitur Utama
+Kelola client dan proyek website dengan nyaman: status pekerjaan, paket layanan, pembayaran, serta pengingat kadaluarsa domain/hosting.
+
+<br/>
+
+<img alt="Repo Banner" src="docs/screenshots/banner.png" width="800"/>
+
+<br/>
+
+[![Made with Laravel](https://img.shields.io/badge/Laravel-12-red?logo=laravel)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-%5E8.2-777bb3?logo=php)](https://www.php.net/)
+[![Node](https://img.shields.io/badge/Node-%5E18-339933?logo=node.js)](https://nodejs.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](#lisensi)
+
+</div>
+
+> Dibangun dengan: Laravel 12, Tailwind CSS 4, Vite, Alpine.js
+
+## 📌 Daftar Isi
+
+- [✨ Fitur Utama](#-fitur-utama)
+- [🧩 Teknologi](#-teknologi)
+- [✅ Persyaratan](#-persyaratan)
+- [⚙️ Instalasi & Menjalankan](#️-instalasi--menjalankan)
+- [🔑 Akun Awal (Seeder)](#-akun-awal-seeder)
+- [🧭 Alur Aplikasi](#-alur-aplikasi)
+- [🗃️ Skema Data (Ringkas)](#️-skema-data-ringkas)
+- [📁 Struktur Proyek](#-struktur-proyek)
+- [🧪 Testing](#-testing)
+- [🛠️ Troubleshooting](#️-troubleshooting)
+- [🖼️ Screenshots](#️-screenshots)
+- [🔗 API Examples (AJAX)](#-api-examples-ajax)
+- [📜 Lisensi](#-lisensi)
+
+## ✨ Fitur Utama
 
 - Autentikasi: login via email atau username, logout, proteksi halaman dengan middleware `auth`.
 - Dashboard: ringkasan metrik (total client/proyek), jumlah domain/hosting yang segera kadaluarsa, daftar terbaru client/proyek, kalender aktivitas per bulan, dan grafik jumlah proyek per periode.
@@ -12,20 +46,20 @@ Aplikasi internal untuk mengelola client dan proyek website, termasuk status pek
 - Settings: halaman pengaturan profil user (nama, username, email, ganti password).
 - Theming: variabel warna dan favicon dapat diambil dari tabel `settings` (opsional) untuk menyesuaikan tampilan.
 
-## Teknologi
+## 🧩 Teknologi
 
 - Backend: Laravel 12 (PHP 8.2+), Eloquent ORM, Queue (driver database), Sessions (driver database).
 - Frontend: Tailwind CSS 4, Vite, Alpine.js (CDN), Blade templates.
 - Database: MySQL/MariaDB (default), dukungan SQLite untuk pengujian.
 
-## Persyaratan
+## ✅ Persyaratan
 
 - PHP 8.2 atau lebih baru dengan ekstensi: `pdo_mysql`, `mbstring`, `openssl`, `tokenizer`, `xml`, `ctype`, `json`.
 - Composer (untuk dependency PHP).
 - Node.js 18+ dan NPM (untuk aset frontend via Vite).
 - MySQL/MariaDB berjalan lokal.
 
-## Instalasi & Menjalankan
+## ⚙️ Instalasi & Menjalankan
 
 1) Clone & dependency
 - `composer install`
@@ -55,11 +89,11 @@ Aplikasi internal untuk mengelola client dan proyek website, termasuk status pek
 - Atau jalankan semua proses dev sekaligus: `composer dev`
   - Menjalankan: PHP server, queue listener, pail (log viewer), dan Vite dev server secara paralel.
 
-## Akun Awal (Seeder)
+## 🔑 Akun Awal (Seeder)
 
 - Admin: email `admin@dashboard.com`, username `admin`, password `password`.
 
-## Alur Aplikasi
+## 🧭 Alur Aplikasi
 
 - Autentikasi
   - GET `/login` menampilkan form; POST `/login` menerima `login` (email/username) dan `password`.
@@ -80,7 +114,7 @@ Aplikasi internal untuk mengelola client dan proyek website, termasuk status pek
 - Theming
   - Layout membaca `$appSettings` (dibagikan via `AppServiceProvider`) sehingga variabel warna seperti `primary_color`, `secondary_color`, `accent_color`, serta `favicon` dapat dikonfigurasi via tabel `settings`.
 
-## Skema Data (Ringkas)
+## 🗃️ Skema Data (Ringkas)
 
 - `users`: name, username (unik), email (unik), password, timestamps.
 - `clients`: name, phone, email, address, notes, timestamps.
@@ -91,18 +125,97 @@ Aplikasi internal untuk mengelola client dan proyek website, termasuk status pek
 Catatan migrasi penting:
 - Beberapa migrasi melakukan transformasi enum (mis. `payment_status` dan `status`). Jalankan migrasi berurutan agar penyesuaian data berjalan aman.
 
-## Perintah Berguna
+### 🧰 Perintah Berguna
 
 - Cache/config/view/route clear: 
   - `php artisan config:clear && php artisan cache:clear && php artisan route:clear && php artisan view:clear`
 - Daftar rute: `php artisan route:list`
 - Listener antrian (queue): `php artisan queue:listen --tries=1`
 
-## Testing
+## 📁 Struktur Proyek
+
+```
+dashboard-proyek/
+├─ app/
+│  ├─ Http/
+│  │  └─ Controllers/
+│  │     ├─ AuthController.php
+│  │     ├─ DashboardController.php
+│  │     ├─ ClientController.php
+│  │     ├─ ProjectController.php
+│  │     └─ SettingController.php
+│  ├─ Models/
+│  │  ├─ User.php
+│  │  ├─ Client.php
+│  │  ├─ Project.php
+│  │  └─ Setting.php
+│  └─ Providers/
+│     └─ AppServiceProvider.php
+├─ bootstrap/
+│  ├─ app.php
+│  └─ providers.php
+├─ config/
+│  ├─ app.php, auth.php, cache.php, database.php, filesystems.php,
+│  │  logging.php, mail.php, queue.php, session.php, services.php
+├─ database/
+│  ├─ migrations/
+│  │  ├─ 0001_01_01_000000_create_users_table.php
+│  │  ├─ 0001_01_01_000001_create_cache_table.php
+│  │  ├─ 0001_01_01_000002_create_jobs_table.php
+│  │  ├─ 2025_07_25_003626_create_clients_table.php
+│  │  ├─ 2025_07_25_003638_create_projects_table.php
+│  │  ├─ 2025_07_25_141517_update_payment_status_enum_in_projects_table.php
+│  │  ├─ 2025_07_25_142032_add_package_status_to_projects_table.php
+│  │  ├─ 2025_07_26_060920_add_username_to_users_table.php
+│  │  ├─ 2025_07_26_081609_add_hosting_provider_to_projects_table.php
+│  │  ├─ 2025_07_26_175233_update_status_enum_in_projects_table.php
+│  │  └─ 2025_08_03_011047_create_settings_table.php
+│  └─ seeders/
+│     ├─ AdminUserSeeder.php
+│     ├─ ClientSeeder.php
+│     ├─ ProjectSeeder.php
+│     ├─ SettingSeeder.php
+│     └─ DatabaseSeeder.php
+├─ public/
+│  ├─ index.php
+│  ├─ build/        # output Vite (CSS/JS produksi)
+│  └─ storage -> storage/app/public
+├─ resources/
+│  ├─ views/
+│  │  ├─ layouts/ (app.blade.php, guest.blade.php)
+│  │  ├─ dashboard/
+│  │  ├─ clients/
+│  │  ├─ projects/
+│  │  ├─ settings/
+│  │  ├─ auth/login.blade.php
+│  │  └─ custom/pagination.blade.php
+│  ├─ css/app.css
+│  └─ js/ (app.js, bootstrap.js)
+├─ routes/
+│  ├─ web.php
+│  └─ console.php
+├─ tests/
+│  ├─ Feature/ExampleTest.php
+│  ├─ Unit/ExampleTest.php
+│  └─ TestCase.php
+├─ artisan
+├─ composer.json, composer.lock
+├─ package.json, package-lock.json
+├─ tailwind.config.js, postcss.config.js, vite.config.js
+└─ README.md
+```
+
+Konvensi singkat
+- Routes → `routes/web.php` terhubung ke controller di `app/Http/Controllers`.
+- Model → `app/Models` mengelola relasi dan accessor (status expiry/label paket di `Project`).
+- Views → `resources/views` menggunakan Blade + Tailwind, asset di-load via `@vite`.
+- Settings global → dibagikan ke semua view melalui `AppServiceProvider` sebagai `$appSettings`.
+
+## 🧪 Testing
 
 - Menjalankan test: `composer test` (menggunakan PHPUnit).
 
-## Troubleshooting
+## 🛠️ Troubleshooting
 
 - Tidak bisa konek DB (SQLSTATE[HY000] [2002]):
   - Ganti `DB_HOST=localhost` atau isi `DB_SOCKET` sesuai `socket` MySQL Anda.
@@ -115,16 +228,17 @@ Catatan migrasi penting:
 - Permission storage/cache:
   - Pastikan `storage/` dan `bootstrap/cache/` writable (mis. `chmod -R 775 storage bootstrap/cache`).
 
-## Screenshots
+## 🖼️ Screenshots
 
 Letakkan gambar di `docs/screenshots/` dan sesuaikan nama file berikut bila berbeda.
 
+![Login](docs/screenshots/login.png)
 ![Dashboard](docs/screenshots/dashboard.png)
 ![Clients](docs/screenshots/clients.png)
 ![Projects](docs/screenshots/projects.png)
 ![Settings](docs/screenshots/settings.png)
 
-## API Examples (AJAX)
+## 🔗 API Examples (AJAX)
 
 Contoh endpoint yang mengembalikan JSON untuk dipakai oleh UI.
 
@@ -215,6 +329,61 @@ Response (contoh):
 }
 ```
 
-## Lisensi
+## 📜 Lisensi
+
+---
+
+## 🗺️ Diagram ER (Mermaid)
+
+> Diagram konseptual relasi antar tabel utama.
+
+```mermaid
+erDiagram
+    USERS ||--o{ SESSIONS : creates
+    CLIENTS ||--o{ PROJECTS : has
+    SETTINGS
+
+    USERS {
+      bigint id PK
+      string name
+      string username
+      string email
+      string password
+    }
+    CLIENTS {
+      bigint id PK
+      string name
+      string email
+      string phone
+    }
+    PROJECTS {
+      bigint id PK
+      bigint client_id FK
+      string website_name
+      string url
+      enum status
+      enum payment_status
+      enum package_status
+      date domain_expiry
+      date hosting_expiry
+      string hosting_provider
+      decimal price
+    }
+    SETTINGS {
+      bigint id PK
+      string key
+      text value
+      string group
+      string type
+    }
+```
+
+## 🎬 Demo (Opsional)
+
+Tambahkan GIF demo ke `docs/screenshots/demo.gif`, lalu tampilkan di sini:
+
+```markdown
+![Demo](docs/screenshots/demo.gif)
+```
 
 Proyek ini menggunakan Laravel (MIT). Lisensi kode aplikasi mengikuti lisensi repo ini.
