@@ -4,12 +4,6 @@
 
 Kelola client dan proyek website dengan nyaman: status pekerjaan, paket layanan, pembayaran, serta pengingat kadaluarsa domain/hosting.
 
-<br/>
-
-<img alt="Repo Banner" src="docs/screenshots/banner.png" width="800"/>
-
-<br/>
-
 [![Made with Laravel](https://img.shields.io/badge/Laravel-12-red?logo=laravel)](https://laravel.com)
 [![PHP](https://img.shields.io/badge/PHP-%5E8.2-777bb3?logo=php)](https://www.php.net/)
 [![Node](https://img.shields.io/badge/Node-%5E18-339933?logo=node.js)](https://nodejs.org/)
@@ -22,23 +16,19 @@ Kelola client dan proyek website dengan nyaman: status pekerjaan, paket layanan,
 
 ## 📌 Daftar Isi
 
-- [✨ Fitur Utama](#-fitur-utama)
-- [🧩 Teknologi](#-teknologi)
-- [✅ Persyaratan](#-persyaratan)
-- [⚙️ Instalasi & Menjalankan](#️-instalasi--menjalankan)
-- [🔑 Akun Awal (Seeder)](#-akun-awal-seeder)
-- [🧭 Alur Aplikasi](#-alur-aplikasi)
-- [🗃️ Skema Data (Ringkas)](#️-skema-data-ringkas)
-- [📁 Struktur Proyek](#-struktur-proyek)
-- [🧭 Quick Reference (URL → Controller → View)](#-quick-reference-url--controller--view)
-- [🧪 Testing](#-testing)
-- [🛠️ Troubleshooting](#️-troubleshooting)
-- [🖼️ Screenshots](#️-screenshots)
-- [🔗 API Examples (AJAX)](#-api-examples-ajax)
-- [🖥️ Contoh Konfigurasi Produksi](#️-contoh-konfigurasi-produksi)
-- [🚧 Roadmap](#-roadmap)
-- [🤝 Contributing](#-contributing)
-- [📜 Lisensi](#-lisensi)
+- [✨ Fitur Utama](#fitur-utama)
+- [🧩 Teknologi](#teknologi)
+- [✅ Persyaratan](#persyaratan)
+- [⚙️ Instalasi & Menjalankan](#instalasi--menjalankan)
+- [🔑 Akun Awal (Seeder)](#akun-awal-seeder)
+- [🧭 Alur Aplikasi](#alur-aplikasi)
+- [🗃️ Skema Data (Ringkas)](#skema-data-ringkas)
+- [📁 Struktur Proyek](#struktur-proyek)
+- [🧭 Quick Reference (URL → Controller → View)](#quick-reference-url--controller--view)
+- [🖼️ Screenshots](#screenshots)
+- [🚧 Roadmap](#roadmap)
+- [🤝 Contributing](#contributing)
+- [📜 Lisensi](#lisensi)
 
 ## ✨ Fitur Utama
 
@@ -270,83 +260,6 @@ GET   /test-alpine       → view('test-alpine')       → resources/views/test-
 
 Jangan commit file `.env`. Gunakan `.env.example` sebagai referensi.
 
-## 🧪 Testing
-
-- Menjalankan test: `composer test` (menggunakan PHPUnit).
-
-## 🛠️ Troubleshooting
-
-- Tidak bisa konek DB (SQLSTATE[HY000] [2002]):
-  - Ganti `DB_HOST=localhost` atau isi `DB_SOCKET` sesuai `socket` MySQL Anda.
-- Access denied (1045):
-  - Pastikan user/password benar dan user memiliki privilege ke database (`GRANT ALL PRIVILEGES ON dashboard_proyek.* TO ...`).
-- `vendor/autoload.php` tidak ditemukan:
-  - Jalankan `composer install`.
-- CSS/JS tidak muncul saat dev:
-  - Jalankan `npm run dev` atau lakukan build `npm run build`.
-- Permission storage/cache:
-  - Pastikan `storage/` dan `bootstrap/cache/` writable (mis. `chmod -R 775 storage bootstrap/cache`).
-
-## 🖥️ Contoh Konfigurasi Produksi
-
-Nginx (PHP-FPM):
-
-```
-server {
-    server_name your-domain.com;
-    root /var/www/dashboard-proyek/public;
-
-    index index.php index.html;
-
-    location / {
-        try_files $uri $uri/ /index.php?$query_string;
-    }
-
-    location ~ \.php$ {
-        include fastcgi_params;
-        fastcgi_pass unix:/run/php/php8.2-fpm.sock; # sesuaikan versi
-        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
-        fastcgi_param DOCUMENT_ROOT $realpath_root;
-        include snippets/fastcgi-php.conf;
-    }
-
-    location ~* \.(jpg|jpeg|png|gif|css|js|ico|svg)$ {
-        expires max;
-        log_not_found off;
-    }
-}
-```
-
-Supervisor (queue worker):
-
-```
-[program:dashboard-proyek-queue]
-process_name=%(program_name)s_%(process_num)02d
-command=php /var/www/dashboard-proyek/artisan queue:listen --tries=1
-autostart=true
-autorestart=true
-numprocs=1
-redirect_stderr=true
-stdout_logfile=/var/log/supervisor/dashboard-proyek-queue.log
-stopwaitsecs=3600
-```
-
-Env produksi minimal:
-
-```
-APP_ENV=production
-APP_DEBUG=false
-APP_URL=https://your-domain.com
-LOG_LEVEL=info
-SESSION_DRIVER=database
-QUEUE_CONNECTION=database
-```
-
-Deploy tips:
-- Build aset: `npm run build` dan pastikan folder `public/build` ikut ter-deploy.
-- Cache optimisasi: `php artisan config:cache && php artisan route:cache && php artisan view:cache`.
-- Pastikan permission `storage/` dan `bootstrap/cache/` sesuai user web server.
-
 ## 🚧 Roadmap
 
 - RBAC (roles/permissions) untuk multi-user.
@@ -399,152 +312,6 @@ Letakkan gambar di `docs/screenshots/` dan sesuaikan nama file berikut bila berb
 ![Projects](docs/screenshots/projects.png)
 ![Settings](docs/screenshots/settings.png)
 
-## 🔗 API Examples (AJAX)
-
-Contoh endpoint yang mengembalikan JSON untuk dipakai oleh UI.
-
-1) Projects Fetch (detail proyek)
-
-Request:
-
-```
-GET /projects/fetch/{project_id}
-```
-
-cURL:
-
-```
-curl -H "X-Requested-With: XMLHttpRequest" \
-  http://localhost:8000/projects/fetch/1
-```
-
-Response (200 OK):
-
-```json
-{
-  "success": true,
-  "project": {
-    "id": 1,
-    "client_id": 1,
-    "website_name": "Company Website",
-    "url": "company-website.com",
-    "status": "completed",
-    "domain_expiry": "2026-07-25",
-    "hosting_expiry": "2026-07-25",
-    "hosting_provider": "Virtual Server",
-    "price": "15000000.00",
-    "payment_date": "2025-06-25",
-    "payment_status": "paid",
-    "package_status": "website_maintenance",
-    "notes": "Website perusahaan...",
-    "client": { "id": 1, "name": "PT. Technology Solutions" }
-  }
-}
-```
-
-2) Dashboard Chart Data
-
-Request params:
-
-```
-GET /dashboard?ajax_chart=1&chart_year=2025&chart_period=month
-```
-
-Response (contoh):
-
-```json
-{
-  "success": true,
-  "chartData": [
-    { "period": "Jan", "count": 2 },
-    { "period": "Feb", "count": 5 }
-  ]
-}
-```
-
-3) Dashboard Calendar (proyek pada tanggal tertentu)
-
-Request params:
-
-```
-GET /dashboard?calendar_date=15&calendar_year=2025&calendar_month=8
-```
-
-Response (contoh):
-
-```json
-{
-  "success": true,
-  "date": "15 Aug 2025",
-  "projects": [
-    {
-      "id": 3,
-      "name": "E-commerce Platform",
-      "client_name": "Toko Online Sejahtera",
-      "package_name": null,
-      "package_status": "website_maintenance_seo",
-      "status": "on_hold",
-      "created_at": "2025-08-15T10:30:00.000000Z"
-    }
-  ]
-}
-```
-
 ## 📜 Lisensi
 
 ---
-
-## 🗺️ Diagram ER (Mermaid)
-
-> Diagram konseptual relasi antar tabel utama.
-
-```mermaid
-erDiagram
-    USERS ||--o{ SESSIONS : creates
-    CLIENTS ||--o{ PROJECTS : has
-    SETTINGS
-
-    USERS {
-      bigint id PK
-      string name
-      string username
-      string email
-      string password
-    }
-    CLIENTS {
-      bigint id PK
-      string name
-      string email
-      string phone
-    }
-    PROJECTS {
-      bigint id PK
-      bigint client_id FK
-      string website_name
-      string url
-      enum status
-      enum payment_status
-      enum package_status
-      date domain_expiry
-      date hosting_expiry
-      string hosting_provider
-      decimal price
-    }
-    SETTINGS {
-      bigint id PK
-      string key
-      text value
-      string group
-      string type
-    }
-```
-
-## 🎬 Demo (Opsional)
-
-Tambahkan GIF demo ke `docs/screenshots/demo.gif`, lalu tampilkan di sini:
-
-```markdown
-![Demo](docs/screenshots/demo.gif)
-```
-
-Proyek ini menggunakan Laravel (MIT). Lisensi kode aplikasi mengikuti lisensi repo ini.
