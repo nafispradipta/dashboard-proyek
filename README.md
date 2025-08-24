@@ -16,20 +16,20 @@ Kelola client dan proyek website dengan nyaman: status pekerjaan, paket layanan,
 
 ## 📌 Daftar Isi
 
-- [✨ Fitur Utama](#✨-fitur-utama)
-- [🧩 Teknologi](#🧩-teknologi)
-- [✅ Persyaratan](#✅-persyaratan)
-- [⚙️ Instalasi & Menjalankan](#⚙️-instalasi--menjalankan)
-- [🔑 Akun Awal (Seeder)](#🔑-akun-awal-seeder)
-- [🧭 Alur Aplikasi](#🧭-alur-aplikasi)
-- [🧠 Hal Penting untuk Dipahami](#🧠-hal-penting-untuk-dipahami)
-- [🗃️ Skema Data (Ringkas)](#🗃️-skema-data-ringkas)
+- [✨ Fitur Utama](#fitur-utama)
+- [🧩 Teknologi](#teknologi)
+- [✅ Persyaratan](#persyaratan)
+- [⚙️ Instalasi & Menjalankan](#instalasi--menjalankan)
+- [🔑 Akun Awal (Seeder)](#akun-awal-seeder)
+- [🧭 Alur Aplikasi](#alur-aplikasi)
+- [🧠 Hal Penting untuk Dipahami](#hal-penting-untuk-dipahami)
+- [🗃️ Skema Data (Ringkas)](#skema-data-ringkas)
 - [🧰 Perintah Berguna](#perintah-berguna)
-- [📁 Struktur Proyek](#📁-struktur-proyek)
-- [🧭 Quick Reference (URL → Controller → View)](#🧭-quick-reference-url--controller--view)
-- [🔐 Environment Variables Penting](#🔐-environment-variables-penting)
-- [🚧 Roadmap](#🚧-roadmap)
-- [🖼️ Screenshots](#🖼️-screenshots)
+- [📁 Struktur Proyek](#struktur-proyek)
+- [🧭 Quick Reference (URL → Controller → View)](#quick-reference)
+- [🔐 Environment Variables Penting](#environment-variables-penting)
+- [🚧 Roadmap](#roadmap)
+- [🖼️ Screenshots](#screenshots)
 
 <a id="fitur-utama"></a>
 ## ✨ Fitur Utama
