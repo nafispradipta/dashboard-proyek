@@ -16,19 +16,24 @@ Kelola client dan proyek website dengan nyaman: status pekerjaan, paket layanan,
 
 ## 📌 Daftar Isi
 
-- [✨ Fitur Utama](#fitur-utama)
-- [🧩 Teknologi](#teknologi)
-- [✅ Persyaratan](#persyaratan)
-- [⚙️ Instalasi & Menjalankan](#instalasi--menjalankan)
-- [🔑 Akun Awal (Seeder)](#akun-awal-seeder)
-- [🧭 Alur Aplikasi](#alur-aplikasi)
-- [🗃️ Skema Data (Ringkas)](#skema-data-ringkas)
-- [📁 Struktur Proyek](#struktur-proyek)
-- [🧭 Quick Reference (URL → Controller → View)](#quick-reference-url--controller--view)
-- [🖼️ Screenshots](#screenshots)
-- [🚧 Roadmap](#roadmap)
-- [🤝 Contributing](#contributing)
-- [📜 Lisensi](#lisensi)
+- [✨ Fitur Utama](#✨-fitur-utama)
+- [🧩 Teknologi](#🧩-teknologi)
+- [✅ Persyaratan](#✅-persyaratan)
+- [⚙️ Instalasi & Menjalankan](#⚙️-instalasi--menjalankan)
+- [🔑 Akun Awal (Seeder)](#🔑-akun-awal-seeder)
+- [🧭 Alur Aplikasi](#🧭-alur-aplikasi)
+- [🧠 Hal Penting untuk Dipahami](#🧠-hal-penting-untuk-dipahami)
+- [🗃️ Skema Data (Ringkas)](#🗃️-skema-data-ringkas)
+- [📁 Struktur Proyek](#📁-struktur-proyek)
+- [🧭 Quick Reference (URL → Controller → View)](#🧭-quick-reference-url--controller--view)
+- [🔐 Environment Variables Penting](#🔐-environment-variables-penting)
+- [🚀 Checklist Produksi (Penting)](#🚀-checklist-produksi-penting)
+- [⚠️ Batasan & Catatan](#⚠️-batasan--catatan)
+- [🚫 Jangan Dimasukkan ke Repo](#🚫-jangan-dimasukkan-ke-repo)
+- [🖼️ Screenshots](#🖼️-screenshots)
+- [🚧 Roadmap](#🚧-roadmap)
+- [🤝 Contributing](#🤝-contributing)
+- [📜 Lisensi](#📜-lisensi)
 
 ## ✨ Fitur Utama
 
