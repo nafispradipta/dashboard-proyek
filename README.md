@@ -30,10 +30,14 @@ Kelola client dan proyek website dengan nyaman: status pekerjaan, paket layanan,
 - [🧭 Alur Aplikasi](#-alur-aplikasi)
 - [🗃️ Skema Data (Ringkas)](#️-skema-data-ringkas)
 - [📁 Struktur Proyek](#-struktur-proyek)
+- [🧭 Quick Reference (URL → Controller → View)](#-quick-reference-url--controller--view)
 - [🧪 Testing](#-testing)
 - [🛠️ Troubleshooting](#️-troubleshooting)
 - [🖼️ Screenshots](#️-screenshots)
 - [🔗 API Examples (AJAX)](#-api-examples-ajax)
+- [🖥️ Contoh Konfigurasi Produksi](#️-contoh-konfigurasi-produksi)
+- [🚧 Roadmap](#-roadmap)
+- [🤝 Contributing](#-contributing)
 - [📜 Lisensi](#-lisensi)
 
 ## ✨ Fitur Utama
@@ -113,6 +117,18 @@ Kelola client dan proyek website dengan nyaman: status pekerjaan, paket layanan,
   - Update profil user (nama, username, email, password). Validasi unique dan `current_password` saat mengganti password.
 - Theming
   - Layout membaca `$appSettings` (dibagikan via `AppServiceProvider`) sehingga variabel warna seperti `primary_color`, `secondary_color`, `accent_color`, serta `favicon` dapat dikonfigurasi via tabel `settings`.
+
+## 🧠 Hal Penting untuk Dipahami
+
+- Mode Login: menggunakan session auth Laravel; semua halaman utama dilindungi middleware `auth`.
+- Peran (Roles): saat ini single role (Admin). Pengelolaan user multi-role belum tersedia.
+- Data Seeder: membuat akun admin + data contoh client/proyek agar UI langsung terisi. Ubah/disable seeder sesuai kebutuhan produksi.
+- Enums Penting:
+  - `projects.status`: `planning|in_progress|completed|on_hold`
+  - `projects.payment_status`: `pending|paid|overdue`
+  - `projects.package_status`: `website|maintenance|seo|website_maintenance|website_seo|website_maintenance_seo`
+- Pengingat Kadaluarsa: status `expired|warning|safe` diturunkan dari `domain_expiry`/`hosting_expiry` (lihat accessor di `App\Models\Project`).
+- AJAX: beberapa elemen dashboard dan modal proyek memuat data via request AJAX (respons JSON), tetapi tetap memakai session (bukan token API).
 
 ## 🗃️ Skema Data (Ringkas)
 
@@ -211,6 +227,49 @@ Konvensi singkat
 - Views → `resources/views` menggunakan Blade + Tailwind, asset di-load via `@vite`.
 - Settings global → dibagikan ke semua view melalui `AppServiceProvider` sebagai `$appSettings`.
 
+## 🧭 Quick Reference (URL → Controller → View)
+
+```
+GET   /                 → redirect('/login')
+GET   /login            → AuthController@showLogin   → resources/views/auth/login.blade.php
+POST  /login            → AuthController@login
+POST  /logout           → AuthController@logout
+
+GET   /dashboard        → DashboardController@index  → resources/views/dashboard/index.blade.php
+
+GET   /clients          → ClientController@index     → resources/views/clients/index.blade.php
+POST  /clients          → ClientController@store
+GET   /clients/{id}     → ClientController@show      → resources/views/clients/show.blade.php
+GET   /clients/{id}/edit→ ClientController@edit      → resources/views/clients/edit.blade.php
+PUT   /clients/{id}     → ClientController@update
+DELETE/clients/{id}     → ClientController@destroy
+
+GET   /projects                 → ProjectController@index → resources/views/projects/index.blade.php
+GET   /projects/create          → ProjectController@create→ resources/views/projects/create.blade.php
+POST  /projects                 → ProjectController@store
+GET   /projects/{id}            → ProjectController@show  → resources/views/projects/show.blade.php
+GET   /projects/{id}/edit       → ProjectController@edit  → resources/views/projects/edit.blade.php
+PUT   /projects/{id}            → ProjectController@update
+DELETE/projects/{id}            → ProjectController@destroy
+GET   /projects/fetch/{id}      → ProjectController@fetch (AJAX JSON)
+
+GET   /settings          → SettingController@index   → resources/views/settings/index.blade.php
+POST  /settings/general  → SettingController@updateGeneral
+
+GET   /test-color        → view('test-color')        → resources/views/test-color.blade.php
+GET   /test-alpine       → view('test-alpine')       → resources/views/test-alpine.blade.php
+```
+
+## 🔐 Environment Variables Penting
+
+- `APP_ENV`, `APP_DEBUG`, `APP_URL`: set sesuai lingkungan (dev/prod) dan domain.
+- `DB_CONNECTION=mysql`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`.
+- `SESSION_DRIVER=database`, `QUEUE_CONNECTION=database` (default proyek).
+- `LOG_CHANNEL=stack`, `LOG_LEVEL=info|debug`.
+- `MAIL_MAILER` (default log), set SMTP untuk produksi.
+
+Jangan commit file `.env`. Gunakan `.env.example` sebagai referensi.
+
 ## 🧪 Testing
 
 - Menjalankan test: `composer test` (menggunakan PHPUnit).
@@ -227,6 +286,108 @@ Konvensi singkat
   - Jalankan `npm run dev` atau lakukan build `npm run build`.
 - Permission storage/cache:
   - Pastikan `storage/` dan `bootstrap/cache/` writable (mis. `chmod -R 775 storage bootstrap/cache`).
+
+## 🖥️ Contoh Konfigurasi Produksi
+
+Nginx (PHP-FPM):
+
+```
+server {
+    server_name your-domain.com;
+    root /var/www/dashboard-proyek/public;
+
+    index index.php index.html;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        include fastcgi_params;
+        fastcgi_pass unix:/run/php/php8.2-fpm.sock; # sesuaikan versi
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT $realpath_root;
+        include snippets/fastcgi-php.conf;
+    }
+
+    location ~* \.(jpg|jpeg|png|gif|css|js|ico|svg)$ {
+        expires max;
+        log_not_found off;
+    }
+}
+```
+
+Supervisor (queue worker):
+
+```
+[program:dashboard-proyek-queue]
+process_name=%(program_name)s_%(process_num)02d
+command=php /var/www/dashboard-proyek/artisan queue:listen --tries=1
+autostart=true
+autorestart=true
+numprocs=1
+redirect_stderr=true
+stdout_logfile=/var/log/supervisor/dashboard-proyek-queue.log
+stopwaitsecs=3600
+```
+
+Env produksi minimal:
+
+```
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://your-domain.com
+LOG_LEVEL=info
+SESSION_DRIVER=database
+QUEUE_CONNECTION=database
+```
+
+Deploy tips:
+- Build aset: `npm run build` dan pastikan folder `public/build` ikut ter-deploy.
+- Cache optimisasi: `php artisan config:cache && php artisan route:cache && php artisan view:cache`.
+- Pastikan permission `storage/` dan `bootstrap/cache/` sesuai user web server.
+
+## 🚧 Roadmap
+
+- RBAC (roles/permissions) untuk multi-user.
+- Notifikasi email/WhatsApp untuk pengingat `domain_expiry`/`hosting_expiry`.
+- Export/Import data (CSV/Excel) untuk clients dan projects.
+- Lampiran/berkas proyek (upload file) per project.
+- Filter lanjutan + saved filters dan kolom kustom.
+- Peningkatan test coverage (Feature + Unit) dan CI pipeline.
+- Docker dev environment + opsi Sail.
+- I18n: dukungan multi-bahasa (ID/EN).
+
+## 🤝 Contributing
+
+- Fork repo dan buat branch fitur: `feat/nama-fitur` atau `fix/issue-xyz`.
+- Ikuti gaya kode PSR-12 dan jalankan `php artisan pint` (bila tersedia) untuk formatting.
+- Jalankan test lokal: `composer test`.
+- Buat PR dengan deskripsi jelas, sertakan langkah uji dan screenshot bila relevan.
+
+## 🚀 Checklist Produksi (Penting)
+
+- Ganti kredensial admin bawaan (seeder): ubah email/username/password admin.
+- Set: `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL=https://domain-anda`.
+- Database: jalankan `php artisan migrate` (tanpa seeder bila tidak perlu data contoh).
+- Assets: `npm run build` (pastikan `public/build` ter-deploy).
+- Cache optimisasi: `php artisan config:cache && php artisan route:cache && php artisan view:cache`.
+- Queue worker: jalankan listener (jika diperlukan): `php artisan queue:listen` atau via supervisor.
+- Storage symlink: `php artisan storage:link`.
+- Permission: `storage/` dan `bootstrap/cache/` writable oleh PHP-FPM/web server.
+
+## ⚠️ Batasan & Catatan
+
+- Migrations enum: beberapa migrasi mengubah kolom `ENUM` via `DB::statement` (MySQL/MariaDB). Pastikan kompatibel dengan versi server Anda.
+- Roles/permissions: belum ada RBAC. Semua pengguna saat ini setara (Admin).
+- Email: default `MAIL_MAILER=log` (hanya log). Konfigurasikan SMTP untuk pengiriman email nyata.
+- Tests: saat ini masih minimal (example tests). Perlu perluasan untuk cakupan fitur.
+
+## 🚫 Jangan Dimasukkan ke Repo
+
+- `.env` dan file kredensial lain (gunakan secrets di CI/CD).
+- `storage/logs/*`, `storage/framework/*` (sudah di-`.gitignore`).
+- `vendor/` dan `node_modules/` (gunakan `composer install` dan `npm ci`).
 
 ## 🖼️ Screenshots
 
