@@ -23,6 +23,9 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 
+# Tooling / local assistants
+.claude
+
 # Additional Security
 *.pem
 *.key
