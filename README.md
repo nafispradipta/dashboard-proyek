@@ -24,17 +24,14 @@ Kelola client dan proyek website dengan nyaman: status pekerjaan, paket layanan,
 - [🧭 Alur Aplikasi](#🧭-alur-aplikasi)
 - [🧠 Hal Penting untuk Dipahami](#🧠-hal-penting-untuk-dipahami)
 - [🗃️ Skema Data (Ringkas)](#🗃️-skema-data-ringkas)
+- [📁 🧰 Perintah Berguna](#🧰 Perintah Berguna)
 - [📁 Struktur Proyek](#📁-struktur-proyek)
 - [🧭 Quick Reference (URL → Controller → View)](#🧭-quick-reference-url--controller--view)
 - [🔐 Environment Variables Penting](#🔐-environment-variables-penting)
-- [🚀 Checklist Produksi (Penting)](#🚀-checklist-produksi-penting)
-- [⚠️ Batasan & Catatan](#⚠️-batasan--catatan)
-- [🚫 Jangan Dimasukkan ke Repo](#🚫-jangan-dimasukkan-ke-repo)
-- [🖼️ Screenshots](#🖼️-screenshots)
 - [🚧 Roadmap](#🚧-roadmap)
-- [🤝 Contributing](#🤝-contributing)
-- [📜 Lisensi](#📜-lisensi)
+- [🖼️ Screenshots](#🖼️-screenshots)
 
+<a id="fitur-utama"></a>
 ## ✨ Fitur Utama
 
 - Autentikasi: login via email atau username, logout, proteksi halaman dengan middleware `auth`.
@@ -45,12 +42,14 @@ Kelola client dan proyek website dengan nyaman: status pekerjaan, paket layanan,
 - Settings: halaman pengaturan profil user (nama, username, email, ganti password).
 - Theming: variabel warna dan favicon dapat diambil dari tabel `settings` (opsional) untuk menyesuaikan tampilan.
 
+<a id="teknologi"></a>
 ## 🧩 Teknologi
 
 - Backend: Laravel 12 (PHP 8.2+), Eloquent ORM, Queue (driver database), Sessions (driver database).
 - Frontend: Tailwind CSS 4, Vite, Alpine.js (CDN), Blade templates.
 - Database: MySQL/MariaDB (default), dukungan SQLite untuk pengujian.
 
+<a id="persyaratan"></a>
 ## ✅ Persyaratan
 
 - PHP 8.2 atau lebih baru dengan ekstensi: `pdo_mysql`, `mbstring`, `openssl`, `tokenizer`, `xml`, `ctype`, `json`.
@@ -58,6 +57,7 @@ Kelola client dan proyek website dengan nyaman: status pekerjaan, paket layanan,
 - Node.js 18+ dan NPM (untuk aset frontend via Vite).
 - MySQL/MariaDB berjalan lokal.
 
+<a id="instalasi--menjalankan"></a>
 ## ⚙️ Instalasi & Menjalankan
 
 1) Clone & dependency
@@ -88,10 +88,12 @@ Kelola client dan proyek website dengan nyaman: status pekerjaan, paket layanan,
 - Atau jalankan semua proses dev sekaligus: `composer dev`
   - Menjalankan: PHP server, queue listener, pail (log viewer), dan Vite dev server secara paralel.
 
+<a id="akun-awal-seeder"></a>
 ## 🔑 Akun Awal (Seeder)
 
 - Admin: email `admin@dashboard.com`, username `admin`, password `password`.
 
+<a id="alur-aplikasi"></a>
 ## 🧭 Alur Aplikasi
 
 - Autentikasi
@@ -113,6 +115,7 @@ Kelola client dan proyek website dengan nyaman: status pekerjaan, paket layanan,
 - Theming
   - Layout membaca `$appSettings` (dibagikan via `AppServiceProvider`) sehingga variabel warna seperti `primary_color`, `secondary_color`, `accent_color`, serta `favicon` dapat dikonfigurasi via tabel `settings`.
 
+<a id="hal-penting-untuk-dipahami"></a>
 ## 🧠 Hal Penting untuk Dipahami
 
 - Mode Login: menggunakan session auth Laravel; semua halaman utama dilindungi middleware `auth`.
@@ -125,6 +128,7 @@ Kelola client dan proyek website dengan nyaman: status pekerjaan, paket layanan,
 - Pengingat Kadaluarsa: status `expired|warning|safe` diturunkan dari `domain_expiry`/`hosting_expiry` (lihat accessor di `App\Models\Project`).
 - AJAX: beberapa elemen dashboard dan modal proyek memuat data via request AJAX (respons JSON), tetapi tetap memakai session (bukan token API).
 
+<a id="skema-data-ringkas"></a>
 ## 🗃️ Skema Data (Ringkas)
 
 - `users`: name, username (unik), email (unik), password, timestamps.
@@ -143,6 +147,7 @@ Catatan migrasi penting:
 - Daftar rute: `php artisan route:list`
 - Listener antrian (queue): `php artisan queue:listen --tries=1`
 
+<a id="struktur-proyek"></a>
 ## 📁 Struktur Proyek
 
 ```
@@ -222,6 +227,7 @@ Konvensi singkat
 - Views → `resources/views` menggunakan Blade + Tailwind, asset di-load via `@vite`.
 - Settings global → dibagikan ke semua view melalui `AppServiceProvider` sebagai `$appSettings`.
 
+<a id="quick-reference"></a>
 ## 🧭 Quick Reference (URL → Controller → View)
 
 ```
@@ -255,6 +261,7 @@ GET   /test-color        → view('test-color')        → resources/views/test-
 GET   /test-alpine       → view('test-alpine')       → resources/views/test-alpine.blade.php
 ```
 
+<a id="environment-variables-penting"></a>
 ## 🔐 Environment Variables Penting
 
 - `APP_ENV`, `APP_DEBUG`, `APP_URL`: set sesuai lingkungan (dev/prod) dan domain.
@@ -265,6 +272,7 @@ GET   /test-alpine       → view('test-alpine')       → resources/views/test-
 
 Jangan commit file `.env`. Gunakan `.env.example` sebagai referensi.
 
+<a id="roadmap"></a>
 ## 🚧 Roadmap
 
 - RBAC (roles/permissions) untuk multi-user.
@@ -276,37 +284,7 @@ Jangan commit file `.env`. Gunakan `.env.example` sebagai referensi.
 - Docker dev environment + opsi Sail.
 - I18n: dukungan multi-bahasa (ID/EN).
 
-## 🤝 Contributing
-
-- Fork repo dan buat branch fitur: `feat/nama-fitur` atau `fix/issue-xyz`.
-- Ikuti gaya kode PSR-12 dan jalankan `php artisan pint` (bila tersedia) untuk formatting.
-- Jalankan test lokal: `composer test`.
-- Buat PR dengan deskripsi jelas, sertakan langkah uji dan screenshot bila relevan.
-
-## 🚀 Checklist Produksi (Penting)
-
-- Ganti kredensial admin bawaan (seeder): ubah email/username/password admin.
-- Set: `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL=https://domain-anda`.
-- Database: jalankan `php artisan migrate` (tanpa seeder bila tidak perlu data contoh).
-- Assets: `npm run build` (pastikan `public/build` ter-deploy).
-- Cache optimisasi: `php artisan config:cache && php artisan route:cache && php artisan view:cache`.
-- Queue worker: jalankan listener (jika diperlukan): `php artisan queue:listen` atau via supervisor.
-- Storage symlink: `php artisan storage:link`.
-- Permission: `storage/` dan `bootstrap/cache/` writable oleh PHP-FPM/web server.
-
-## ⚠️ Batasan & Catatan
-
-- Migrations enum: beberapa migrasi mengubah kolom `ENUM` via `DB::statement` (MySQL/MariaDB). Pastikan kompatibel dengan versi server Anda.
-- Roles/permissions: belum ada RBAC. Semua pengguna saat ini setara (Admin).
-- Email: default `MAIL_MAILER=log` (hanya log). Konfigurasikan SMTP untuk pengiriman email nyata.
-- Tests: saat ini masih minimal (example tests). Perlu perluasan untuk cakupan fitur.
-
-## 🚫 Jangan Dimasukkan ke Repo
-
-- `.env` dan file kredensial lain (gunakan secrets di CI/CD).
-- `storage/logs/*`, `storage/framework/*` (sudah di-`.gitignore`).
-- `vendor/` dan `node_modules/` (gunakan `composer install` dan `npm ci`).
-
+<a id="screenshots"></a>
 ## 🖼️ Screenshots
 
 Letakkan gambar di `docs/screenshots/` dan sesuaikan nama file berikut bila berbeda.
@@ -316,7 +294,5 @@ Letakkan gambar di `docs/screenshots/` dan sesuaikan nama file berikut bila berb
 ![Clients](docs/screenshots/clients.png)
 ![Projects](docs/screenshots/projects.png)
 ![Settings](docs/screenshots/settings.png)
-
-## 📜 Lisensi
 
 ---
