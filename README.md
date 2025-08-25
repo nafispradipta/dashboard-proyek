@@ -288,8 +288,6 @@ Jangan commit file `.env`. Gunakan `.env.example` sebagai referensi.
 <a id="screenshots"></a>
 ## 🖼️ Screenshots
 
-Letakkan gambar di `docs/screenshots/` dan sesuaikan nama file berikut bila berbeda.
-
 ![Login](docs/screenshots/login.png)
 ![Dashboard](docs/screenshots/dashboard.png)
 ![Clients](docs/screenshots/clients.png)
